@@ -4,16 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.AbsListView
-import android.widget.AbsListView.RecyclerListener
-import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_movie_detailed_ext.*
 import kotlinx.android.synthetic.main.fragment_movies_list.*
-
 
 class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener {
     companion object{
@@ -52,9 +46,6 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
         setContentView(R.layout.activity_main)
 
         openAllMoviesList()
-        /*findViewById<View>(R.id.showDetailsBtn).setOnClickListener {
-            openDetailedFragment()
-        }*/
         initButtonListener()
     }
     private fun openAllMoviesList(){
@@ -94,9 +85,8 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
         }
     }
 
-
     private fun initButtonListener(){
-        findViewById<BottomNavigationView>(R.id.navigationBottom).setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
+        findViewById<BottomNavigationView>(R.id.navigationBottom).setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_allMovies -> {
                     Log.d(TAG,"action_allMovies")
@@ -108,14 +98,7 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
                 }
             }
             false
-        })
-
-
-
-        /*findViewById<View>(R.id.action_allMovies).setOnClickListener {
-
-        }*/
-
+        }
     }
     fun View.snack(message: String, duration: Int = Snackbar.LENGTH_LONG) {
         Snackbar.make(this, message, duration).show()
@@ -160,7 +143,6 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
                         }
                     }
                 ).show()
-
             }
         }
     }
