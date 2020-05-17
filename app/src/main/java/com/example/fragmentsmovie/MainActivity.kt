@@ -26,8 +26,7 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
         var allFilmsFragmentAttached: Fragment = Fragment()
         var numLastAddIndex:Int =0
     }
-
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
