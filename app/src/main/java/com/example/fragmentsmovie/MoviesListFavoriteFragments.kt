@@ -24,6 +24,8 @@ class MoviesListFavoriteFragments : Fragment () {
         return  inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<RecyclerView>(R.id.recyclerView).adapter = MoviesAdapter(
@@ -31,8 +33,9 @@ class MoviesListFavoriteFragments : Fragment () {
             FavoriteMovies
         ) { moviesItem: MoviesItem, long: Int, position: Int ->
 
-            recyclerView.adapter?.notifyItemChanged(position)
             listener?.onMoviesSelected(moviesItem,long,position)
+            recyclerView.adapter?.notifyItemRemoved(position)
+            recyclerView.adapter?.notifyItemRangeChanged(position, recyclerView.adapter!!.itemCount)
         }
     }
 

@@ -1,14 +1,15 @@
 package com.example.fragmentsmovie
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fragmentsmovie.MainActivity.Companion.AllMovies
 import kotlinx.android.synthetic.main.fragment_movies_list.*
-import java.lang.Exception
 
 class MoviesListFragments : Fragment (){
     companion object{
@@ -39,15 +40,29 @@ class MoviesListFragments : Fragment (){
 
         view.findViewById<RecyclerView>(R.id.recyclerView).adapter = MoviesAdapter(
             LayoutInflater.from(activity),
-            AllMovies) { moviesItem: MoviesItem, long: Int, position: Int ->
-
-            recyclerView.adapter?.notifyItemChanged(position)
-            listener?.onMoviesSelected(moviesItem,long,position)
+            AllMovies) { moviesItem: MoviesItem, addToFovarite: Int, position: Int ->
+                listener?.onMoviesSelected(moviesItem,addToFovarite,position)
+                recyclerView.adapter?.notifyItemChanged(position)
         }
 
-        /*view.findViewById<RecyclerView>(R.id.recyclerView).adapter = MoviesAdapter(LayoutInflater.from(activity), AllMovies){
-            listener?.onMoviesSelected(it)
-        }*/
+        val recycler = view.findViewById<RecyclerView>(R.id.recyclerView)
+
+        recycler.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+
+                Log.d("TAG","dx:$dx dy:$dy ")
+
+                var layoutManager= recycler.layoutManager as LinearLayoutManager
+                val x = layoutManager.findLastVisibleItemPosition()
+                Log.d("TAG","layoutManager.findLastVisibleItemPosition() = $x ")
+                if (layoutManager.findLastVisibleItemPosition()== AllMovies.size-1){
+
+                    listener?.onMoviesSelected(MoviesItem(1,"1","1",false),-1,0)
+                    Log.d("TAG","NEW LOAD!!!! ")
+                }
+
+            }
+        })
     }
 
     interface MoviesListListener {

@@ -2,14 +2,13 @@ package com.example.fragmentsmovie
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.OrientationEventListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
 class MoviesAdapter (private val layoutInflater: LayoutInflater,
                      private val items: List<MoviesItem>,
-                     private val listener: (moviesItem: MoviesItem, long : Int, position : Int) -> Unit) : RecyclerView.Adapter<MoviesViewHolder>(){
+                     private val listener: (moviesItem: MoviesItem, addToFovarite : Int, position : Int) -> Unit) : RecyclerView.Adapter<MoviesViewHolder>(){
     companion object{
         const val TAG = "MoviesAdapter"
     }
@@ -30,8 +29,8 @@ class MoviesAdapter (private val layoutInflater: LayoutInflater,
         holder.itemView.findViewById<ImageView>(R.id.imageFavoriteAll).setOnClickListener(){
             Log.d(TAG,"imageFavoriteAll->setOnLongClickListener")
             listener.invoke(items[position],1,position)
-
         }
+
     }
 
 }

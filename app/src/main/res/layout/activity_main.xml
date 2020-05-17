@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:fitsSystemWindows="true">
 
     <FrameLayout
         android:id="@+id/fragmentContainer"
@@ -14,7 +15,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/navigationBottom"
+        android:fitsSystemWindows="true"
          >
+
+        <Button
+            android:id="@+id/buttonGetData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="dbg" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="220dip"
+            android:layout_marginTop="20dip"
+            android:indeterminateDrawable="@drawable/spinner_ring"
+            android:indeterminateOnly="true"
+            android:visibility="invisible"
+            />
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

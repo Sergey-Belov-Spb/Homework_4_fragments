@@ -1,58 +1,46 @@
 package com.example.fragmentsmovie
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_movies_list.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener {
+
     companion object{
         const val TAG = "MainActivity"
-        val imgsArray = arrayOf(R.drawable.film_0,
-            R.drawable.film_1,
-            R.drawable.film_2,
-            R.drawable.film_3,
-            R.drawable.film_4,
-            R.drawable.film_5,
-            R.drawable.film_6,
-            R.drawable.film_7,
-            R.drawable.film_8,
-            R.drawable.film_9,
-            R.drawable.film_10,
-            R.drawable.film_11,
-            R.drawable.film_12)
 
-        var AllMovies =listOf(
-            MoviesItem(0, 1,"Film 0", "Содержание фильма 0 \n\tЭто очень длинный текст описания, который вставлен сюда доя проверки работы ....",false),
-            MoviesItem(1, 2,"Film 1", "Содержание фильма 1",false),
-            MoviesItem(2, 3,"Film 2", "Содержание фильма 2",false),
-            MoviesItem(3, 4,"Film 3", "Содержание фильма 3",false),
-            MoviesItem(4, 5,"Film 4", "Содержание фильма 4",false),
-            MoviesItem(5, 6,"Film 5", "Содержание фильма 5",false),
-            MoviesItem(6, 7,"Film 6", "Содержание фильма 6",false),
-            MoviesItem(7, 8,"Film 7", "Содержание фильма 7",false),
-            MoviesItem(8, 9,"Film 8", "Содержание фильма 8",false)
-        )
+        var AllMovies: MutableList<MoviesItem> = ArrayList()
         var FavoriteMovies: MutableList<MoviesItem> = ArrayList()
         var LastFragmentAttached: Fragment = Fragment()
+        var allFilmsFragmentAttached: Fragment = Fragment()
+        var numLastAddIndex:Int =0
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        //val toolbar  =  findViewById<Toolbar>(R.id.toolbar)//findViewById(R.id.toolbar);
         openAllMoviesList()
         initButtonListener()
+        GetDataFromInet()
     }
     private fun openAllMoviesList(){
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragmentContainer,MoviesListFragments(), MoviesListFragments.TAG  )
-            .addToBackStack(null)
+            .addToBackStack("Main")
             .commit()
     }
 
@@ -60,15 +48,15 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragmentContainer,MoviesListFavoriteFragments(), MoviesListFavoriteFragments.TAG  )
-            .addToBackStack(null)
+            .addToBackStack("Favorite")
             .commit()
     }
 
     private fun openDetailedFragment(moviesItem: MoviesItem) {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragmentContainer,MovieDetailedFragment.newInstance(moviesItem.name,moviesItem.indexPic,moviesItem.contents),MovieDetailedFragment.TAG)
-            .addToBackStack(null)
+            .replace(R.id.fragmentContainer,MovieDetailedFragment.newInstance(moviesItem.name,moviesItem.image),MovieDetailedFragment.TAG)
+            .addToBackStack("Detaled")
             .commit()
     }
 
@@ -78,11 +66,32 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
         if (fragment is MoviesListFragments){
             fragment.listener = this
             Log.d(TAG,"onAttachFragment -> MoviesListFragments")
+            allFilmsFragmentAttached = fragment
+            /*if (allFilmsFragmentAttached is MoviesListFragments) {
+            }
+            else{
+                    allFilmsFragmentAttached = fragment
+                    allFilmsFragmentAttached.recyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                            /*val layoutManager :layoutManager = allFilmsFragmentAttached.recyclerView.layoutManager
+                            if (layoutManager.findLast .findLastVisibleItemPosition() == AllMovies.size)
+                            {
+
+                            }*/
+                            Log.d("TAG","dx:$dx dy:$dy ")
+                            super.onScrolled(recyclerView, dx, dy)
+                        }
+                })
+            }*/
         }
         if (fragment is MoviesListFavoriteFragments){
             fragment.listener = this
             Log.d(TAG,"onAttachFragment -> MoviesListFavoriteFragments")
         }
+        else{
+            Log.d(TAG,"onAttachFragment -> ????????")
+        }
+
     }
 
     private fun initButtonListener(){
@@ -99,13 +108,74 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
             }
             false
         }
+        findViewById<Button>(R.id.buttonGetData).setOnClickListener(){
+            Log.d(TAG,"buttonGetData")
+            GetDataFromInet()
+        }
     }
+
+    override fun onBackPressed() {
+        val fragmentsInStack= supportFragmentManager.backStackEntryCount
+        Log.d(TAG,"fragmentsInStack =$fragmentsInStack")
+
+
+        val dd =supportFragmentManager.fragments
+
+        val CurFragment = supportFragmentManager.findFragmentByTag(MoviesListFragments.TAG)
+
+
+        if (CurFragment is MoviesListFragments) {
+            Log.d(TAG,"is MoviesListFragments")
+        }
+
+        if (fragmentsInStack>1){
+            if (LastFragmentAttached is MoviesListFragments){
+                finish()
+             }
+            else supportFragmentManager.popBackStack()
+        } else if (fragmentsInStack==1){
+            finish()
+        } else {
+            super.onBackPressed()
+        }
+    }
+    /***/
+    fun GetDataFromInet() {
+        findViewById<ProgressBar>(R.id.progressBar).visibility=View.VISIBLE
+
+        App.instance.api.getFilms()
+            .enqueue(object : Callback <List<FilmModel>?> {
+                override fun onFailure(call: Call<List<FilmModel>?>, t: Throwable) {
+                }
+                override fun onResponse(
+                    call: Call<List<FilmModel>?>,
+                    response: Response<List<FilmModel>?>
+                ) {val lastSize = numLastAddIndex
+                    if (response.isSuccessful) {
+                        response.body()?.forEach {
+                            Log.d(TAG, "it.id $it.id")
+                            AllMovies.add(MoviesItem(numLastAddIndex++,it.title,it.image,false))
+                        }
+                    }
+                    findViewById<ProgressBar>(R.id.progressBar).visibility=View.INVISIBLE
+                    if (allFilmsFragmentAttached is MoviesListFragments){
+                        allFilmsFragmentAttached.recyclerView.adapter?.notifyDataSetChanged()
+                        allFilmsFragmentAttached.recyclerView.adapter?.notifyItemRangeChanged(lastSize, numLastAddIndex);
+                    }
+                }
+            })
+    }
+
+
     fun View.snack(message: String, duration: Int = Snackbar.LENGTH_LONG) {
         Snackbar.make(this, message, duration).show()
     }
+
     override fun onMoviesSelected(moviesItem: MoviesItem, add: Int, position : Int) {
         Log.d(TAG,"onMoviesSelected MoviesItem=$moviesItem add=$add")
 
+        if (add==-1) {GetDataFromInet()}
+        else
         if (add==0) {openDetailedFragment(moviesItem)}
         else {
             moviesItem.inFavorite=!moviesItem.inFavorite
@@ -114,8 +184,12 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
                 val AddedMovieItem = moviesItem
                 val AddedPosition = position
                 FavoriteMovies.add(moviesItem)
-                Snackbar.make(this.findViewById(R.id.fragmentContainer), "Отменить последнюю операцию?", Snackbar.LENGTH_LONG
-                ).setAction(
+
+                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                lp.setMargins(0, 0, 0, 10)
+                val mySnackbar =Snackbar.make(this.findViewById(R.id.fragmentContainer), "Отменить последнюю операцию?", Snackbar.LENGTH_SHORT)
+                mySnackbar.view.layoutParams=lp
+                mySnackbar.setAction(
                     "Отмена",
                     {
                         AddedMovieItem.inFavorite=!AddedMovieItem.inFavorite
@@ -132,8 +206,11 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
                 FavoriteMovies.remove(moviesItem)
                 val DeletedMovieItem = moviesItem
                 val DeletedPosition = position
-                Snackbar.make(this.findViewById(R.id.fragmentContainer), "Отменить последнюю операцию?", Snackbar.LENGTH_LONG
-                ).setAction(
+                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                lp.setMargins(0, 0, 0, 10)
+                val mySnackbar =Snackbar.make(this.findViewById(R.id.fragmentContainer), "Отменить последнюю операцию?", Snackbar.LENGTH_SHORT)
+                mySnackbar.view.layoutParams=lp
+                mySnackbar.setAction(
                     "Отмена",
                     {
                         DeletedMovieItem.inFavorite=!DeletedMovieItem.inFavorite
