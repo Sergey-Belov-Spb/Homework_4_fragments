@@ -52,7 +52,7 @@ class MoviesListFragments : Fragment (){
 
                 Log.d("TAG","dx:$dx dy:$dy ")
 
-                var layoutManager= recycler.layoutManager as LinearLayoutManager
+                val layoutManager= recycler.layoutManager as LinearLayoutManager
                 val x = layoutManager.findLastVisibleItemPosition()
                 Log.d("TAG","layoutManager.findLastVisibleItemPosition() = $x ")
                 if (layoutManager.findLastVisibleItemPosition()== AllMovies.size-1){
@@ -60,7 +60,6 @@ class MoviesListFragments : Fragment (){
                     listener?.onMoviesSelected(MoviesItem(1,"1","1",false),-1,0)
                     Log.d("TAG","NEW LOAD!!!! ")
                 }
-
             }
         })
     }

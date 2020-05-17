@@ -67,22 +67,7 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
             fragment.listener = this
             Log.d(TAG,"onAttachFragment -> MoviesListFragments")
             allFilmsFragmentAttached = fragment
-            /*if (allFilmsFragmentAttached is MoviesListFragments) {
-            }
-            else{
-                    allFilmsFragmentAttached = fragment
-                    allFilmsFragmentAttached.recyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener(){
-                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                            /*val layoutManager :layoutManager = allFilmsFragmentAttached.recyclerView.layoutManager
-                            if (layoutManager.findLast .findLastVisibleItemPosition() == AllMovies.size)
-                            {
 
-                            }*/
-                            Log.d("TAG","dx:$dx dy:$dy ")
-                            super.onScrolled(recyclerView, dx, dy)
-                        }
-                })
-            }*/
         }
         if (fragment is MoviesListFavoriteFragments){
             fragment.listener = this
@@ -91,7 +76,6 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
         else{
             Log.d(TAG,"onAttachFragment -> ????????")
         }
-
     }
 
     private fun initButtonListener(){
@@ -117,12 +101,7 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
     override fun onBackPressed() {
         val fragmentsInStack= supportFragmentManager.backStackEntryCount
         Log.d(TAG,"fragmentsInStack =$fragmentsInStack")
-
-
-        val dd =supportFragmentManager.fragments
-
         val CurFragment = supportFragmentManager.findFragmentByTag(MoviesListFragments.TAG)
-
 
         if (CurFragment is MoviesListFragments) {
             Log.d(TAG,"is MoviesListFragments")
@@ -160,12 +139,11 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
                     findViewById<ProgressBar>(R.id.progressBar).visibility=View.INVISIBLE
                     if (allFilmsFragmentAttached is MoviesListFragments){
                         allFilmsFragmentAttached.recyclerView.adapter?.notifyDataSetChanged()
-                        allFilmsFragmentAttached.recyclerView.adapter?.notifyItemRangeChanged(lastSize, numLastAddIndex);
+                        allFilmsFragmentAttached.recyclerView.adapter?.notifyItemRangeChanged(lastSize, numLastAddIndex)
                     }
                 }
             })
     }
-
 
     fun View.snack(message: String, duration: Int = Snackbar.LENGTH_LONG) {
         Snackbar.make(this, message, duration).show()
