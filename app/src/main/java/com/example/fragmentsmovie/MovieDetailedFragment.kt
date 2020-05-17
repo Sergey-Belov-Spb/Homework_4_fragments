@@ -28,7 +28,7 @@ class MovieDetailedFragment :Fragment  (){
             return fragment
         }
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

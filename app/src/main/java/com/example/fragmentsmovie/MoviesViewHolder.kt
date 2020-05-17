@@ -12,11 +12,10 @@ class MoviesViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
     val picFavorite = itemView.findViewById<ImageView>(R.id.imageFavoriteAll)
     val indexMovie = itemView.findViewById<TextView>(R.id.indexMovie)
 
-
     fun bind(item: MoviesItem){
         nameFilm.text  = item.name
-        indexMovie.text = "Id =" + item.id.toString()
-        //imageFilm.setImageResource(imgsArray[item.indexPic])
+        indexMovie.text = "Id :" + item.id.toString()
+
 
         Glide.with(imageFilm.context)
             .load(item.image)
@@ -28,8 +27,5 @@ class MoviesViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         if (item.inFavorite== true) {picFavorite.setImageResource(R.drawable.ic_favorite_black_24dp)}
         else {picFavorite.setImageResource(R.drawable.ic_favorite_border_black_24dp)}
-        //(itemView as TextView).text = item.name
     }
-
-
 }

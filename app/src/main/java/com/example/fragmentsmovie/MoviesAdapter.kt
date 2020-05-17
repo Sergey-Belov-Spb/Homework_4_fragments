@@ -30,7 +30,5 @@ class MoviesAdapter (private val layoutInflater: LayoutInflater,
             Log.d(TAG,"imageFavoriteAll->setOnLongClickListener")
             listener.invoke(items[position],1,position)
         }
-
     }
-
 }
