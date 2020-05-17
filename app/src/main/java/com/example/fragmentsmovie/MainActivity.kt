@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
         initButtonListener()
         GetDataFromInet()
     }
-    
+
     private fun openAllMoviesList(){
         supportFragmentManager
             .beginTransaction()
