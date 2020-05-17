@@ -118,8 +118,8 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
             super.onBackPressed()
         }
     }
-    /***/
-    fun GetDataFromInet() {
+
+    private fun GetDataFromInet() {
         findViewById<ProgressBar>(R.id.progressBar).visibility=View.VISIBLE
 
         App.instance.api.getFilms()
