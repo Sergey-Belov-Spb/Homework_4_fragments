@@ -39,8 +39,6 @@ class MovieDetailedFragment :Fragment  (){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //val Picture = arguments?.getInt(EXTRA_INDEXPIC)
-        //view.findViewById<ImageView>(R.id.image).setImageResource(imgsArray[indecPicture!!])
         val imageView = view.findViewById<ImageView>(R.id.image)
 
         val image: String? = arguments?.getString(EXTRA_INDEXPIC," ")
@@ -51,7 +49,6 @@ class MovieDetailedFragment :Fragment  (){
             .override(imageView.resources.getDimensionPixelSize(R.dimen.image_size))
             .centerCrop()
             .into(imageView)
-
 
         view.findViewById<TextView>(R.id.description).text =arguments?.getString(EXTRA_CONTENS,"Нет содержания")
         view.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar).title=arguments?.getString(EXTRA_NAME,"Нет имени")
