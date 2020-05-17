@@ -28,6 +28,7 @@ class MovieDetailedFragment :Fragment  (){
             return fragment
         }
     }
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,5 +54,4 @@ class MovieDetailedFragment :Fragment  (){
         view.findViewById<TextView>(R.id.description).text =arguments?.getString(EXTRA_CONTENS,"Нет содержания")
         view.findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar).title=arguments?.getString(EXTRA_NAME,"Нет имени")
     }
-
 }
