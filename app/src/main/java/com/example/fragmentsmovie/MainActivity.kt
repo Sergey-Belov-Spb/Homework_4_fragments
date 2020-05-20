@@ -202,3 +202,5 @@ class MainActivity : AppCompatActivity(), MoviesListFragments.MoviesListListener
         }
     }
 }
+
+
